@@ -123,10 +123,12 @@ pip install -r requirements.txt
 
 ## Как улучшить (кратко)
 
-- Подобрать квоты миксера (6/4, 5/5), улучшить TF‑IDF (bi‑grams, sublinear tf, больше признаков).  
-- LTR с ранжирующей целью (LightGBM `lambdarank` / CatBoostRanker), фичи: `score_ease/itemknn/als`, `content_sim`, поп‑сигналы; квота cold в постпроцессе.  
-- Тонкий тюнинг EASE/ALS/ItemKNN, ансамбль скорингов, MMR для диверсификации.  
-- Дедуп изданий и фильтры по качеству карточек.
+- Warm (CF): тюнинг ItemKNN (n_neighbors 100–400), EASE (l2_reg), ALS (factors/alpha/iters); ансамбль скорингов (ItemKNN/EASE/ALS)
+- Cold (контент): TF‑IDF (1–2‑grams, sublinear tf, 20k–50k); взвешенный профиль (is_read/rating/время); top‑K холодных 300–500 + rerank
+- LTR‑переранжирование: кандидаты warm∪cold; фичи = score_ease/itemknn/als + content_sim + поп‑сигналы; LightGBM (lambdarank) или CatBoostRanker; квота cold в топ‑k
+- Персонализация микса: больше cold при короткой истории (<10), меньше — при длинной
+- Данные/фильтры: дедуп изданий (title/series), исключать уже прочитанное, мягко штрафовать сверхпопулярные
+- Доп. модели: графовые/BERT4Rec
 
 ## Лицензия и воспроизводимость
 
